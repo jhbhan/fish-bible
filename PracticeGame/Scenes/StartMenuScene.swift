@@ -3,7 +3,7 @@ import SpriteKit
 class StartMenuScene: SKScene {
     private var parallaxBackground: ParallaxBackground!
     
-    private func MakeButton(_ text: String, _ buttonName: String, _ position: CGPoint) -> (label: SKLabelNode, background: SKShapeNode) {
+    private func MakeButton(_ text: String, _ buttonName: String, _ position: CGPoint){
         // Start Button
         let label = SKLabelNode(text: text)
         label.name = buttonName
@@ -22,7 +22,8 @@ class StartMenuScene: SKScene {
         background.name = buttonName // delegate touches to this node too
         background.position = label.position
         
-        return (label, background)
+        addChild(label)
+        addChild(background)
     }
     
     override func didMove(to view: SKView) {
@@ -38,15 +39,9 @@ class StartMenuScene: SKScene {
         titleLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.7)
         addChild(titleLabel)
 
-        let (startButton, startBackground) = MakeButton("Start Game", "startButton", CGPoint(x: size.width / 2, y: size.height * 0.4))
-        
-        addChild(startBackground)
-        addChild(startButton)
-        
-        let (settingButton, settingBackground) = MakeButton("settings", "settingButton", CGPoint(x: size.width / 2, y: size.height * 0.2))
-        
-        addChild(settingBackground)
-        addChild(settingButton)
+        MakeButton("Start Game", "startButton", CGPoint(x: size.width / 2, y: size.height * 0.4))
+        MakeButton("Settings", "settingButton", CGPoint(x: size.width / 2, y: size.height * 0.3))
+        MakeButton("My Verses", "versesButton", CGPoint(x: size.width / 2, y: size.height * 0.2))
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -58,9 +53,9 @@ class StartMenuScene: SKScene {
         case "startButton":
             showScene(GameScene(size: size))
         case "settingButton":
-            showScene(GameScene(size: size))
+            showScene(SettingScene(size: size))
         case "versesButton":
-            showScene(GameScene(size: size))
+            showScene(VerseScene(size: size))
         default:
             return
         }
