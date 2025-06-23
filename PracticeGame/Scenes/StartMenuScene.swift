@@ -54,12 +54,22 @@ class StartMenuScene: SKScene {
         let location = touch.location(in: self)
         let tappedNode = atPoint(location)
 
-        if tappedNode.name == "startButton" {
-            let gameScene = GameScene(size: size)
-            gameScene.scaleMode = .resizeFill
-            let transition = SKTransition.fade(withDuration: 1.0)
-            view?.presentScene(gameScene, transition: transition)
+        switch tappedNode.name {
+        case "startButton":
+            showScene(GameScene(size: size))
+        case "settingButton":
+            showScene(GameScene(size: size))
+        case "versesButton":
+            showScene(GameScene(size: size))
+        default:
+            return
         }
+    }
+    
+    private func showScene(_ scene: SKScene) {
+        scene.scaleMode = .resizeFill
+        let transition = SKTransition.fade(withDuration: 1.0)
+        view?.presentScene(scene, transition: transition)
     }
     
     override func update(_ currentTime: TimeInterval) {

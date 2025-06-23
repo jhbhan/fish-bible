@@ -18,12 +18,12 @@ class GameManager {
     private var currentVerseIndex: Int = 0
     private(set) var currentVerse: Verse
     
-    init(_ verses: [Verse]) {
-            self.verses = verses
-            self.currentVerseIndex = 0
-            self.currentVerse = verses[0]
-            loadVerse(at: currentVerseIndex)
-        }
+    init() {
+        self.verses = GlobalConfig.shared.selectedVerses
+        self.currentVerseIndex = 0
+        self.currentVerse = verses[0]
+        loadVerse(at: currentVerseIndex)
+    }
 
     private func cleanAndSplitText(_ text: String) -> [String] {
         let unwantedCharacterSet = CharacterSet.punctuationCharacters.subtracting(CharacterSet(charactersIn: "'"))

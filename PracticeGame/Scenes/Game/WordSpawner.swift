@@ -111,7 +111,7 @@ class WordSpawner {
     }
 
     private func createFishNode(with word: String) -> SKSpriteNode {
-        let texture = SKTexture(imageNamed: "wordfish")
+        let texture = SKTexture(imageNamed: GlobalConfig.shared.enemySprite)
         let fish = SKSpriteNode(texture: texture)
         fish.setScale(0.5)
         fish.name = word

@@ -24,9 +24,9 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         parallaxBackground = ParallaxBackground(scene: self)
-        gameManager = GameManager(stockVerses)
+        gameManager = GameManager()
         
-        let fishTexture = SKTexture(imageNamed: "guppy")
+        let fishTexture = SKTexture(imageNamed: GlobalConfig.shared.characterSprite)
         let fishNode = SKSpriteNode(texture: fishTexture)
         fishNode.name = "fish"
         fishNode.zPosition = 1
