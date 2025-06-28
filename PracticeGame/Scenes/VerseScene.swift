@@ -1,12 +1,7 @@
 import SpriteKit
 
-class VerseScene: SKScene {
-    private var parallaxBackground: ParallaxBackground!
+class VerseScene: BaseScene {
     override func didMove(to view: SKView) {
-        parallaxBackground = ParallaxBackground(scene: self)
-    }
-    
-    override func update(_ currentTime: TimeInterval) {
-        parallaxBackground.update()
+        super.didMove(to: view)
     }
 }

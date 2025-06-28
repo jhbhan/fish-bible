@@ -8,10 +8,10 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: BaseScene {
+    private var isFinishedLoading : Bool = false
     private var fish : SKSpriteNode?
     private var wordSpawner : WordSpawner!
-    private var parallaxBackground: ParallaxBackground!
     private var hud: GameHUD!
     private var gameManager: GameManager!
 
@@ -23,7 +23,6 @@ class GameScene: SKScene {
     private let pauseButtonMargin: CGFloat = 40
     
     override func didMove(to view: SKView) {
-        parallaxBackground = ParallaxBackground(scene: self)
         gameManager = GameManager()
         
         let fishTexture = SKTexture(imageNamed: GlobalConfig.shared.characterSprite)
@@ -51,6 +50,9 @@ class GameScene: SKScene {
         })
         
         wordSpawner.startSpawning(every: 1.0)
+        
+        isFinishedLoading = true
+        super.didMove(to: view)
     }
     
     private func checkIntersection() {
@@ -182,7 +184,21 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        parallaxBackground.update()
         checkIntersection()
+        super.update(currentTime)
+    }
+    
+    override func didChangeSize(_ oldSize: CGSize) {
+        if (isFinishedLoading) {
+            hud.resize(to: size)
+
+            if let pauseButton = childNode(withName: "pauseButton") as? SKLabelNode {
+                pauseButton.position = CGPoint(x: size.width - pauseButtonMargin, y: size.height - pauseButtonMargin)
+            }
+
+            wordSpawner.updateSceneSize(size)
+            
+            super.didChangeSize(oldSize)
+        }
     }
 }

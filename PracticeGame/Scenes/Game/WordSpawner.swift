@@ -2,7 +2,8 @@ import SpriteKit
 
 class WordSpawner {
     private unowned let scene: SKScene
-    private var speed: CGFloat = 100.00;
+    private var speed: CGFloat = 100.00
+    private var sceneSize: CGSize
     
     private(set) var activeWords: [SKNode] = []
     private var wordSupplier: () -> [String]
@@ -15,6 +16,7 @@ class WordSpawner {
     init(scene: SKScene, wordSupplier: @escaping () -> [String]) {
         self.scene = scene
         self.wordSupplier = wordSupplier
+        sceneSize = scene.size
     }
     
     private func getNextWord(from words: [String]) -> String? {
@@ -49,7 +51,7 @@ class WordSpawner {
         scene.addChild(fishNode)
 
         // Define mid point near center
-        let center = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+        let center = CGPoint(x: sceneSize.width / 2, y: sceneSize.height / 2)
         let jitter: CGFloat = 100
         let midPoint = CGPoint(
             x: center.x + CGFloat.random(in: -jitter...jitter),
@@ -66,7 +68,7 @@ class WordSpawner {
         let vy = dy / length
 
         // Extend to endPos far offscreen (multiplier = how far it travels)
-        let multiplier: CGFloat = max(scene.size.width, scene.size.height) * 2
+        let multiplier: CGFloat = max(sceneSize.width, sceneSize.height) * 2
         let endPos = CGPoint(
             x: midPoint.x + vx * multiplier,
             y: midPoint.y + vy * multiplier
@@ -191,5 +193,9 @@ class WordSpawner {
         // Clear the active list and usage counts
         activeWords.removeAll()
         wordUsageCount.removeAll()
+    }
+    
+    func updateSceneSize(_ newSize: CGSize) {
+        self.sceneSize = newSize
     }
 }
