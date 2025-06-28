@@ -168,15 +168,31 @@ class WordSpawner {
         node.run(SKAction.sequence([move, remove, cleanup]))
     }
 
-    func startSpawning(every interval: TimeInterval) {
-        let spawnAction = SKAction.repeatForever(
-            SKAction.sequence([
-                SKAction.wait(forDuration: interval),
-                SKAction.run { [weak self] in self?.spawnFishWord() }
-            ])
-        )
-        scene.run(spawnAction, withKey: "wordSpawning")
+    func startSpawning(initialInterval: TimeInterval) {
+        scheduleNextSpawn(interval: initialInterval)
     }
+
+    private func scheduleNextSpawn(interval: TimeInterval) {
+        let wait = SKAction.wait(forDuration: interval)
+        let spawn = SKAction.run { [weak self] in
+            guard let self = self else { return }
+            self.spawnFishWord()
+
+            // Adjust interval based on current state
+            let newInterval: TimeInterval
+            if self.activeWords.isEmpty {
+                newInterval = 0.5  // faster when no words
+            } else {
+                newInterval = 1.0  // normal rate
+            }
+
+            self.scheduleNextSpawn(interval: newInterval)
+        }
+
+        let sequence = SKAction.sequence([wait, spawn])
+        scene.run(sequence, withKey: "wordSpawning")
+    }
+    
     func stopSpawning() {
         scene.removeAction(forKey: "wordSpawning")
     }

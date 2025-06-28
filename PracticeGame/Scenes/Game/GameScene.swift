@@ -49,7 +49,7 @@ class GameScene: BaseScene {
             self?.gameManager.getTargetWordList() ?? []
         })
         
-        wordSpawner.startSpawning(every: 1.0)
+        wordSpawner.startSpawning(initialInterval: 1)
         
         isFinishedLoading = true
         super.didMove(to: view)

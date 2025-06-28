@@ -8,7 +8,6 @@ class GameHUD: SKNode {
     private let collectedWordsLabel = SKLabelNode(fontNamed: "Fredoka-Medium")
     private let collectedWordsBackground: SKShapeNode
     private var collectedWordLines: [SKLabelNode] = []
-    private let maxDisplayLines = 2
 
     private var collectedWords: [String] = []
     
@@ -56,6 +55,7 @@ class GameHUD: SKNode {
         
         // Verse label background (above word list)
         verseLabelBackground.strokeColor = .white
+        verseLabelBackground.alpha = 0.8
         verseLabelBackground.fillColor = .systemCyan
         verseLabelBackground.position = CGPoint(
             x: collectedWordsBackground.position.x,
@@ -134,50 +134,66 @@ class GameHUD: SKNode {
         }
         collectedWordLines.removeAll()
 
-        // Determine maxCharsPerLine based on background width
-        let fontSize = collectedWordsBackground.frame.height / CGFloat(maxDisplayLines + 2)
-        let estimatedCharWidth = fontSize * 0.6  // closer match to Fredoka
-        let maxLineLength = Int((collectedWordsBackground.frame.width - 20) / estimatedCharWidth)
+        // Layout constants
+        let horizontalPadding: CGFloat = 20  // 10pt left and right
+        let verticalPadding: CGFloat = 20    // 10pt top and bottom
 
-        // Wrap text
+        let availableHeight = collectedWordsBackground.frame.height - verticalPadding
+        let fontName = "Fredoka-Regular"
+
+        // Estimate font size to fit ~3.5 lines
+        var fontSize = availableHeight / 3.5
+        var lineSpacing = fontSize * 1.2
+
+        // Calculate max lines that fit
+        var maxLines = Int(availableHeight / lineSpacing)
+        if maxLines < 1 { maxLines = 1 }
+
+        let maxWidth = collectedWordsBackground.frame.width - horizontalPadding
+
+        // Wrap text based on actual pixel width
         var currentLine = ""
         var lines: [String] = []
 
         for word in words {
-            if currentLine.count + word.count + 1 > maxLineLength {
+            let testLine = currentLine.isEmpty ? word : "\(currentLine) \(word)"
+            let testWidth = (testLine as NSString).size(withAttributes: [
+                .font: UIFont(name: fontName, size: fontSize)!
+            ]).width
+
+            if testWidth > maxWidth {
                 lines.append(currentLine)
                 currentLine = word
             } else {
-                currentLine += (currentLine.isEmpty ? "" : " ") + word
+                currentLine = testLine
             }
         }
+
         if !currentLine.isEmpty {
             lines.append(currentLine)
         }
 
-        // Only display the last few lines
-        let displayLines = lines.suffix(maxDisplayLines)
+        // Take only the last N lines that fit
+        let displayLines = lines.suffix(maxLines)
 
-        // Responsive font size and spacing
-        let lineSpacing = fontSize * 1.2
-
+        // Render lines
         for (i, lineText) in displayLines.enumerated() {
-            let lineLabel = SKLabelNode(fontNamed: "Fredoka-Regular")
+            let lineLabel = SKLabelNode(fontNamed: fontName)
             lineLabel.text = lineText
             lineLabel.fontSize = fontSize
             lineLabel.fontColor = .white
             lineLabel.horizontalAlignmentMode = .left
             lineLabel.verticalAlignmentMode = .center
             lineLabel.position = CGPoint(
-                x: collectedWordsBackground.position.x - collectedWordsBackground.frame.width / 2 + 10,
-                y: collectedWordsBackground.position.y + (CGFloat(displayLines.count - i - 1) * lineSpacing)
+                x: collectedWordsBackground.position.x - collectedWordsBackground.frame.width / 2 + horizontalPadding / 2,
+                y: collectedWordsBackground.position.y + CGFloat(displayLines.count - i - 1) * lineSpacing
             )
             lineLabel.zPosition = 1
             addChild(lineLabel)
             collectedWordLines.append(lineLabel)
         }
     }
-    
+
     func resize(to newSize: CGSize) {
         let horizontalMargin: CGFloat = newSize.width * 0.05
         let bgWidth = newSize.width - 2 * horizontalMargin
