@@ -55,7 +55,7 @@ class GameManager {
 
     public func incrementScore() {
         combo += 1
-        score += min(combo, 10)
+        score += min(combo, 10) * 100
     }
 
     public func resetCombo() {
@@ -101,7 +101,7 @@ class GameManager {
     func getTargetWordList() -> [String] {
         guard !currentTargetWords.isEmpty else { return [] }
 
-        let maxCount = min(5, currentTargetWords.count)
+        let maxCount = min(4, currentTargetWords.count)
         let startingIndex = max(0, min(currentWordIndex, currentTargetWords.count - maxCount))
         let endingIndex = startingIndex + maxCount
 

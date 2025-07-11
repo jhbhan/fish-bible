@@ -1,7 +1,7 @@
 import SpriteKit
 
 class GameHUD: SKNode {
-    private let scoreLabel = SKLabelNode(fontNamed: "Fredoka-Bold")
+    private let scoreLabel = SKLabelNode(fontNamed: "Fredoka-Medium")
     private let comboLabel = SKLabelNode(fontNamed: "Fredoka-Bold")
     private let verseLabel = SKLabelNode(fontNamed: "Fredoka-Medium")
     private let verseLabelBackground: SKShapeNode
@@ -27,14 +27,13 @@ class GameHUD: SKNode {
         // Score
         scoreLabel.fontSize = size.height * 0.045
         scoreLabel.fontColor = .white
-        scoreLabel.position = CGPoint(x: size.width / 2, y: size.height - size.height * 0.08)
+        scoreLabel.position = CGPoint(x: size.width / 2, y: size.height - size.height * 0.1)
         addChild(scoreLabel)
         
         // Combo
         comboLabel.fontSize = size.height * 0.035
         comboLabel.fontColor = .white
-        comboLabel.horizontalAlignmentMode = .left
-        comboLabel.position = CGPoint(x: horizontalMargin, y: size.height - size.height * 0.04)
+        comboLabel.position = CGPoint(x: scoreLabel.position.x, y: scoreLabel.position.y - CGFloat(scoreLabel.fontSize))
         addChild(comboLabel)
         
         // Word list background
@@ -81,8 +80,8 @@ class GameHUD: SKNode {
     }
     
     func update(score: Int32, combo: Int32, newWord: String? = nil) {
-        scoreLabel.text = "Score: \(score)"
-        comboLabel.text = "Combo: \(combo)"
+        scoreLabel.text = "\(score)"
+        comboLabel.text = combo > 0 ? "\(combo) Combo" : ""
         
         if let word = newWord {
             collectedWords.append(word)
